@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Food Mart Dataset</title>
+<style>
+
+h1 {
+
+  font: 24;
+ font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif; 
+color: Blue;
+  }
+
+p {
+
+  font: 14 ;
+font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif; 
+color: black;
+  }
+
+text {
+  font: 12px sans-serif;
+}
+
+
+.node circle {
+  fill: #fff;
+//  stroke: steelblue;
+//  stroke-width: 1.5px;
+}
+
+.node {
+}
+
+.link {
+  fill: none;
+ // stroke: #ccc;
+//  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+
+<div align ="center"> <h1> Variety and Range of Food-Mart Products </h1> </div>
+
+<div align ="center"> <p> The circular dendogram has all products at its root which branches out into three product families
+
+<ul>
+ Drink (red) <br>
+ Food (blue) <br>
+ Non-Consumable (green) <br> 
+
+</ul>
+These further branch out into specific product categories unique to them. Lastly each product category branches out into the number of brands available for those products. <br> The last node ends with circles of specific color decided by the product family it originated from and specific size decided by the number of unique products in that node. 
+ &nbsp; </p> </div>
+
+<div class="h1" id="area2" align="center" display="block">
+
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+(function () {
+var radius = 1300 / 2;
+
+var cluster = d3.layout.cluster()
+    .size([360, radius - 180]);
+
+var diagonal = d3.svg.diagonal.radial()
+    .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
+var svg = d3.select("#area2").append("svg")
+    .attr("width", radius * 2)
+    .attr("height", radius * 2)
+  .append("g")
+    .attr("transform", "translate(" + 1.1*radius + "," + radius + ")");
+
+d3.json("cat_brand.json", function(error, root) {
+  if (error) throw error;
+
+  var nodes = cluster.nodes(root);
+
+  var link = svg.selectAll("path.link")
+      .data(cluster.links(nodes))
+    .enter().append("path")
+      .attr("class", "link")
+      .attr("stroke", "black")
+      .attr("stroke-width", 1)
+      .attr("stroke-opacity", 0.2)
+      .attr("d", diagonal);
+
+  var node = svg.selectAll("g.node")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+
+  node.append("circle")
+     .attr("r", function(d) { return d.size; })
+      .attr("stroke", "black")
+      .attr("stroke-width", 1)
+      .attr("stroke-opacity", 0.5)
+      .style("fill", function(d) { return d.ncolor; })
+      .style("opacity", .5)
+
+  node.append("text")
+      .attr("dy", "10.0")
+      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+ //     .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+     .attr("transform", function(d) { return d.x < 180 ? "translate(40)" : "rotate(180)translate(-40)"; })
+      .text(function(d) { return d.name; });
+});
+
+d3.select(self.frameElement).style("height", radius * 2 + "px");
+
+})();
+
+</script>
+
+
+</div>
+
+</body>
